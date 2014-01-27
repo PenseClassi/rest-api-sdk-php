@@ -1,0 +1,75 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Send Mail Client</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <style type="text/css">
+        *
+        {
+            font-family: 'Anaheim', sans-serif;
+        }
+        
+        #c_data
+        {
+            width: 500px;
+            height: 300px;
+        }
+    </style>
+        
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#btn").bind('click', function(e){
+                    e.preventDefault();
+                    $("#ResponseBody pre").html("");
+                    $( "#retChamada" ).val( '' );
+                    var request = $.ajax({
+                            url: "http://www.pensecarros.com.br:8080/pense-carros/widget/interno/email",
+                            type: "POST",
+                            data: { 
+                                'pagr'  : 'ANUNCIO',
+                                'par'   : 'ENDERECO_EMAIL_FTP_ERROR',
+                                'subject':'Email de teste',
+                                'nome'  : 'Iuri Andreazza',
+                                'nome_label' : 'Nome do Sujeito',
+                                'data'  : '13 março de 2014',
+                                'data_label' : 'Aniversário'
+                                
+                            }
+                    });
+                    request.done(function( msg ) {
+                        var obj;
+                        if(msg instanceof Object){
+                            obj = msg;
+                        }else{
+                            obj = JSON.parse(msg);
+                        }
+                            $("#ResponseBody pre").html(JSON.stringify(obj, null, 4));
+                            $( "#retChamada" ).val( msg );
+                    });
+                    request.fail(function( jqXHR, textStatus ) {
+                            $( "#retChamada" ).val( "Request failed: " + textStatus );
+                    });
+                });
+            })
+            
+            
+        </script>
+        
+    </head>
+    <body>
+        
+        <button id="btn" type="button">Enviar email</button>
+        <br />
+        <div id="ResponseBody"><pre></pre></div>
+        <textarea rows="50" cols="100" id="retChamada" >
+            Retorno da chamada
+        </textarea>
+    </body>
+</html>
